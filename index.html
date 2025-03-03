@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique de Artesanatos</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #fde4ec; /* Rosa claro */
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #5a2848; /* Roxo escuro */
+        }
+
+        h1 {
+            background: linear-gradient(90deg, #e78ea9, #d44c7f);
+            color: white;
+            padding: 15px;
+            margin: 0;
+            font-size: 30px;
+            font-family: 'Playfair Display', serif;
+            border-bottom: 3px solid #b03a62;
+        }
+
+        /* Estilo da logo */
+        .logo {
+            width: 200px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Fundo decorativo */
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Container dos produtos */
+        .produtos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Estilização dos cards de produto */
+        .produto {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+            margin: 15px;
+            padding: 15px;
+            width: 250px;
+            transition: transform 0.3s ease-in-out;
+            border: 2px solid #e78ea9;
+        }
+
+        .produto:hover {
+            transform: scale(1.05);
+            border-color: #d44c7f;
+        }
+
+        .produto img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #e78ea9;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .produto h2 {
+            font-size: 22px;
+            color: #b03a62;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .produto p {
+            color: #5a2848;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem-vindo à Boutique<br> Tica Artesanatos</h1>
+    
+    <!-- LOGO DA EMPRESA -->
+    <img src="https://github.com/Adrianodev00play/imagem/blob/main/Tica%20Artesnatos.png?raw=true" 
+         alt="Logo da Empresa" class="logo">
+
+    <div class="container">
+        <div class="produtos" id="produtos"></div>
+    </div>
+
+    <script>
+        const socket = new WebSocket('wss://helix-sordid-shift.glitch.me');
+
+        socket.onopen = () => {
+            console.log('Conectado ao servidor WebSocket');
+        };
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.tipo === 'atualizar') {
+                exibirProdutos(data.produtos);
+            }
+        };
+
+        function exibirProdutos(produtos) {
+            const container = document.getElementById("produtos");
+            container.innerHTML = "";
+
+            produtos.forEach(produto => {
+                const div = document.createElement("div");
+                div.classList.add("produto");
+                div.innerHTML = `
+                    <img src="${produto.imagem}" alt="${produto.nome}">
+                    <h2>${produto.nome}</h2>
+                    <p><strong>Preço:</strong> ${produto.preco}</p>
+                    <p><strong>Estoque:</strong> ${produto.quantidade}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
